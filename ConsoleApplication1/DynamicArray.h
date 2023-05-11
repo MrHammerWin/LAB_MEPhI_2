@@ -18,12 +18,8 @@ public:
 	};
 
 	DynamicArray(size_t size) 
-		: _items(new T[size]), _size(size), _capacity(size)
-	{
-		for (int i = 0; i < size; i++) {
-			this->_items[i] = 0;
-		}
-	};
+		: _items(new T[size]), _size(0), _capacity(size)
+	{ };
 
 	DynamicArray(DynamicArray<T>& dynamicArray const)
 		: _items(new T[dynamicArray._capacity]), _size(dynamicArray._size), _capacity(dynamicArray._capacity)
@@ -36,6 +32,38 @@ public:
 	~DynamicArray()
 	{
 		delete[] _items;
+	};
+
+	// перегрузка операторов
+
+	T& operator[] (int index)
+	{
+		if (index < 0 || index >= _size) {
+			throw std::out_of_range("Index out of range");
+		}
+
+		return _items[index];
+	};
+
+	T operator[] (int index) const
+	{
+		if (index < 0 || index >= _size) {
+			throw std::out_of_range("Index out of range");
+		}
+
+		return _items[index];
+	};
+
+	DynamicArray<T>& operator=(DynamicArray<T>& dynamicArray const)
+	{
+		if (this != &dynamicArray) {
+			delete[] _items;
+			_size = dynamicArray._size;
+			_items = new T[_size];
+			for (int i = 0; i != _size; i++)
+				_items[i] = dynamicArray._items[i];
+		}
+		return *this;
 	};
 
 	//декомпозиция
@@ -83,9 +111,6 @@ public:
 		T* temp = new T[newSize];
 		for (int i = 0; i < newSize; i++) {
 			temp[i] = _items[i];
-		}
-		for (int i = newSize; i < _size; i++) {
-			temp[i] = 0;
 		}
 
 		delete[] _items;
