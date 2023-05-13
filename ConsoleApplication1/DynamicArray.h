@@ -21,7 +21,7 @@ public:
 		: _items(new T[size]), _size(0), _capacity(size)
 	{ };
 
-	DynamicArray(DynamicArray<T>& dynamicArray const)
+	DynamicArray(DynamicArray<T> const & dynamicArray)
 		: _items(new T[dynamicArray._capacity]), _size(dynamicArray._size), _capacity(dynamicArray._capacity)
 	{
 		for (int i = 0; i < _size; i++) {
@@ -36,15 +36,6 @@ public:
 
 	// перегрузка операторов
 
-	T& operator[] (int index)
-	{
-		if (index < 0 || index >= _size) {
-			throw std::out_of_range("Index out of range");
-		}
-
-		return _items[index];
-	};
-
 	T operator[] (int index) const
 	{
 		if (index < 0 || index >= _size) {
@@ -54,7 +45,7 @@ public:
 		return _items[index];
 	};
 
-	DynamicArray<T>& operator=(DynamicArray<T>& dynamicArray const)
+	DynamicArray<T>& operator=(DynamicArray<T> const & dynamicArray)
 	{
 		if (this != &dynamicArray) {
 			delete[] _items;
@@ -77,16 +68,7 @@ public:
 		return _items[index];
 	};
 
-	T& Get(int index)
-	{
-		if (index < 0 || index >= _size) {
-			throw std::out_of_range("Index out of range");
-		}
-
-		return _items[index];
-	};
-
-	size_t GetSize()
+	size_t GetSize() const noexcept
 	{
 		return _size;
 	};
