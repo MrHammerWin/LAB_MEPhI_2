@@ -36,6 +36,15 @@ public:
 
 	// перегрузка операторов
 
+	T& operator[] (int index)
+	{
+		if (index < 0 || index >= _size) {
+			throw std::out_of_range("Index out of range");
+		}
+
+		return _items[index];
+	};
+
 	T operator[] (int index) const
 	{
 		if (index < 0 || index >= _size) {
