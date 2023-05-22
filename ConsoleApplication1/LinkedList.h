@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdexcept>
+#include <iostream>
 
 template <class T>
 class Node
@@ -41,7 +42,7 @@ public:
 		_length = count;
 	};
 
-	LinkedList() : _head(nullptr), _tail(nullptr), _length(nullptr)
+	LinkedList() : _head(nullptr), _tail(nullptr), _length(0)
 	{ };
 
 	LinkedList(LinkedList<T> const& list)
@@ -87,7 +88,7 @@ public:
 
 	// перегрузка операторов
 
-	// =    НЕ ЗАБЫТЬ
+	// = 
 	LinkedList<T>& operator= (LinkedList<T> const& list) 
 	{
 		if (this != &list) {
@@ -124,7 +125,7 @@ public:
 
 		Node<T>* p = _head;
 
-		for (int i = 1; i <= index; i++) {
+		for (int i = 0; i < index; i++) {
 			p = p->_next;
 		}
 
@@ -164,7 +165,7 @@ public:
 		return list;
 	};
 
-	int GetLength() const
+	size_t GetLength() const
 	{
 		return _length;
 	};
@@ -173,17 +174,32 @@ public:
 
 	void Append(T item)
 	{
-		Node<T>* node = new Node<T>(item, 0);
-		Node<T>* tail = _tail;
-		tail->_next = node;
+		Node<T>* node = new Node<T>(item, 0), * tail = nullptr;
+
+		if (_length == 0) {
+			_head = node;
+			_tail = node;
+		}
+		else {
+			_tail->_next = node;
+			_tail = node;
+		}
 		_length++;
+
 	};
 
 	void Prepend(T item)
 	{
-		Node<T>* node = new Node<T>(item, 0);
-		Node<T>* head = _head;
-		node->_next = head;
+		Node<T>* node = new Node<T>(item, 0), * head = nullptr;
+
+		if (_length == 0) {
+			_head = _tail = node;
+		}
+		else {
+			head = _head;
+			node->_next = head;
+			_head = node;
+		}
 		_length++;
 	};
 
@@ -208,6 +224,7 @@ public:
 			Node<T>* node = new Node<T>(item, p2);
 			p1->_next = node;
 		}
+		_length++;
 	};
 
 	LinkedList<T>* Concat(LinkedList<T>* list)
@@ -227,4 +244,17 @@ private:
 	Node<T>* _tail;
 	size_t _length;
 };
+
+template <typename T>
+void print(LinkedList<T> const & list) {
+	size_t lenght = list.GetLength();
+	std::cout << '[';
+	for (int i = 0; i < lenght; i++) {
+		std::cout << list[i];
+		if (i != lenght - 1) {
+			std::cout << ", ";
+		}
+	}
+	std::cout << ']';
+}
 
