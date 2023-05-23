@@ -94,8 +94,8 @@ public:
 		if (this != &list) {
 			this->~LinkedList;
 			this = new LinkedList<T>(list);
-			return *this;
 		}
+		return *this;
 	}
 
 	// []
@@ -103,17 +103,35 @@ public:
 	{
 		T data = Get(index);
 		return data;
+	};
+
+	// <<
+	friend std::ostream& operator<<(std::ostream& os, const LinkedList<T>& list)
+	{
+		size_t length = list.GetLength();
+		os << "LinkedList[";
+		for (int i = 0; i < length; i++) {
+			os << list[i];
+			if (i != length - 1)
+				os << ", ";
+		}
+		os << "]";
+		return os;
 	}
 
 	// декомпозиция
 
 	T GetFirst() const
 	{
+		if (_length == 0)
+			throw std::out_of_range("List is empty");
 		return _head->_data;
 	};
 
 	T GetLast() const
 	{
+		if (_length == 0)
+			throw std::out_of_range("List is empty");
 		return _tail->_data;
 	};
 
@@ -132,7 +150,7 @@ public:
 		return p->_data;
 	};
 
-	LinkedList<T>* GetSubList(int startIndex, int endIndex)
+	LinkedList<T>* GetSubList(int startIndex, int endIndex) const
 	{
 		if (startIndex < 0 || startIndex >= _length || endIndex < 0 || endIndex >= _length) {
 			throw std::out_of_range("Index out of range");
@@ -227,16 +245,16 @@ public:
 		_length++;
 	};
 
-	LinkedList<T>* Concat(LinkedList<T>* list)
+	LinkedList<T>* Concat(LinkedList<T>* list) const
 	{
 		LinkedList<T>* list1 = new LinkedList<T>(*this);
 		LinkedList<T>* list2 = new LinkedList<T>(*list);
-		LinkedList<T>* list = new LinkedList<T>();
-		list->_head = list1->_head;
-		list->_tail = list2->_tail;
-		list1->_head->_next = list2->_head;
-		list->_length = list1->_length + list2->_length;
-		return list;
+		LinkedList<T>* list3 = new LinkedList<T>();
+		list3->_head = list1->_head;
+		list3->_tail = list2->_tail;
+		list1->_tail->_next = list2->_head;
+		list3->_length = list1->_length + list2->_length;
+		return list3;
 	};
 
 private:
@@ -244,17 +262,3 @@ private:
 	Node<T>* _tail;
 	size_t _length;
 };
-
-template <typename T>
-void print(LinkedList<T> const & list) {
-	size_t lenght = list.GetLength();
-	std::cout << '[';
-	for (int i = 0; i < lenght; i++) {
-		std::cout << list[i];
-		if (i != lenght - 1) {
-			std::cout << ", ";
-		}
-	}
-	std::cout << ']';
-}
-

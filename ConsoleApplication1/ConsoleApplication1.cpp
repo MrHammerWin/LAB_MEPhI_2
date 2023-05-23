@@ -7,14 +7,16 @@
 
 int main()
 {
-    LinkedList<int>* list = new LinkedList<int>();
-    list->Append(5); int a1 = list->Get(0);
-    list->Append(4); int a2 = list->Get(1);
-    list->Append(3); int a3 = list->Get(2);
-    list->Append(2); int a4 = list->Get(3);
-    list->Append(1); int a5 = list->Get(4);
+    LinkedList<int> list;
+    LinkedList<int> listochek;
+    list.Append(5); listochek.Append(5);
+    list.Append(4); listochek.Append(4);
+    list.Append(3); listochek.Append(3);
+    list.Append(2); listochek.Append(2);
+    list.Append(1); listochek.Append(1);
     //printf("%d %d %d %d %d", );
-    print(*list);
+    LinkedList<int>* newlist = list.Concat(&listochek);
+    std::cout << *newlist << std::endl;
     return 0;
 }
 

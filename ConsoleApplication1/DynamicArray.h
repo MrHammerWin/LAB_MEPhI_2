@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdexcept>
+#include <iostream>
 
 template <class T>
 class DynamicArray
@@ -35,16 +36,8 @@ public:
 	};
 
 	// перегрузка операторов
-
-	T& operator[] (int index)
-	{
-		if (index < 0 || index >= _size) {
-			throw std::out_of_range("Index out of range");
-		}
-
-		return _items[index];
-	};
-
+	
+	// []
 	T operator[] (int index) const
 	{
 		if (index < 0 || index >= _size) {
@@ -54,6 +47,7 @@ public:
 		return _items[index];
 	};
 
+	// = 
 	DynamicArray<T>& operator=(DynamicArray<T> const & dynamicArray)
 	{
 		if (this != &dynamicArray) {
@@ -65,6 +59,20 @@ public:
 		}
 		return *this;
 	};
+
+	// <<
+	friend std::ostream& operator<<(std::ostream& os, const DynamicArray<T>& arr)
+	{
+		size_t length = arr.GetSize();
+		os << "DynamicArray(";
+		for (int i = 0; i < length; i++) {
+			os << arr[i];
+			if (i != length - 1)
+				os << ", ";
+		}
+		os << ")";
+		return os;
+	}
 
 	//декомпозиция
 
@@ -86,7 +94,7 @@ public:
 
 	void Set(int index, T value)
 	{
-		if (index < 0 || index >= _size) {
+		if (index < 0 || index >= _capacity) {
 			throw std::out_of_range("Index out of range");
 		}
 
