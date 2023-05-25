@@ -7,7 +7,7 @@ class ListSequence : public Sequence<T>
 {
 public:
 
-	// конструкторы
+// конструкторы
 	ListSequence(LinkedList<T> const& list) : _list(list)
 	{ };
 
@@ -26,13 +26,13 @@ public:
 		_list = new LinkedList(list._list);
 	};
 
-	// деструктор
+// деструктор
 	~ListSequence()
 	{
 		delete _list;
 	};
 
-	// перегрузка операторов
+// перегрузка операторов
 
 	// = 
 	ListSequence<T>& operator=(ListSequence<T> const& seq)
@@ -45,7 +45,7 @@ public:
 	};
 
 	// []
-	T operator[] (int index)
+	T operator[] (int index) const
 	{
 		return Get(index);
 	};
@@ -64,36 +64,35 @@ public:
 		return os;
 	};
 
-	// декомпозиция
-	T GetFirst() override 
+// декомпозиция
+	T GetFirst() const override
 	{
 		return _list->GetFirst();
 	};
 
-	T GetLast() override 
+	T GetLast() const override 
 	{
 		return _list->GetLast();
 	};
 
-	T Get(int index) override 
+	T Get(int index) const override 
 	{
 		return _list->Get(index);
 	};
 
-	Sequence<T>* GetSubsequence(int startIndex, int endIndex) override 
+	Sequence<T>* GetSubsequence(int startIndex, int endIndex) const override 
 	{
 		LinkedList<T>* newList = _list->GetSubList(startIndex, endIndex);
 		ListSequence<T>* list_seq = new ListSequence<T>(newList);
 		return list_seq;
 	};
 
-	size_t GetLength() override 
+	size_t GetLength() const override  
 	{
 		return _list->GetLength;
 	};
 
-	// операции
-
+// операции
 	void Append(T item) override 
 	{
 		_list->Append(item);
@@ -109,7 +108,7 @@ public:
 		_list->InsertAt(item, index);
 	};
 
-	Sequence<T>* Concat(Sequence<T>* seq) override 
+	Sequence<T>* Concat(Sequence<T>* seq) const override  
 	{
 		LinkedList<T>* list1 = LinkedList<T>(_list);
 		size_t length_seq = seq->GetLength();

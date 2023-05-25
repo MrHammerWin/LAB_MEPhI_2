@@ -2,6 +2,7 @@
 
 #include <stdexcept>
 #include <iostream>
+#include <stdlib.h>
 
 template <class T>
 class Node
@@ -27,7 +28,7 @@ class LinkedList
 {
 public:
 
-	// создание
+// создание
 
 	LinkedList(T* items, int count)
 	{
@@ -77,16 +78,17 @@ public:
 
 	~LinkedList()
 	{
+		printf("Ya rodilsya!!!");
 		Node<T>* p1 = _head, * p2 = _head->_next;
 		delete _head;
-		for (int i = _length - 1; i > 0; i--) {
+		for (int i = 0; i < _length - 1; i++) {
 			p1 = p2;
 			p2 = p2->_next;
 			delete p1;
 		}
 	};
 
-	// перегрузка операторов
+// перегрузка операторов
 
 	// = 
 	LinkedList<T>& operator= (LinkedList<T> const& list) 
@@ -119,7 +121,7 @@ public:
 		return os;
 	}
 
-	// декомпозиция
+// декомпозиция
 
 	T GetFirst() const
 	{
@@ -157,29 +159,12 @@ public:
 		}
 
 		Node<T>* p = nullptr, * p1 = nullptr, * p2 = nullptr;
-		LinkedList<T>* list = nullptr;
+		LinkedList<T>* list = new LinkedList<T>();
 
-		if (endIndex - startIndex < 0) {
-			list = new LinkedList<T>();
-		} 
-		else {
-			list = new LinkedList<T>();
-			p1 = this->_head;
-			for (int i = 1; i <= startIndex; i++) {
-				p1 = p1->_next;
-			}
-			list->_head = new Node<T>(p1->_data, nullptr);
-			p = list->_head;
-			p1 = p1->_next;
-			for (int i = startIndex + 1; i <= endIndex; i++) {
-				p2 = new Node<T>(p1->_data, nullptr);
-				p->_next = p2;
-				p = p2;
-				p1 = p1->_next;
-			}
-			list->_tail = p;
-			list->_length = endIndex - startIndex + 1;
+		for (int i = startIndex; i <= endIndex; i++) {
+			list->Append((*this)[i]);
 		}
+
 		return list;
 	};
 
@@ -188,7 +173,7 @@ public:
 		return _length;
 	};
 
-	// операции
+// операции
 
 	void Append(T item)
 	{
@@ -254,6 +239,9 @@ public:
 		list3->_tail = list2->_tail;
 		list1->_tail->_next = list2->_head;
 		list3->_length = list1->_length + list2->_length;
+
+		free(list1); free(list2);
+
 		return list3;
 	};
 

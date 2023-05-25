@@ -8,7 +8,7 @@ class DynamicArray
 {
 public:
 
-	//конструкторы и деструктор
+//конструкторы и деструктор
 
 	DynamicArray(T* items, size_t count) 
 		: _items(new T[count]), _size(count), _capacity(count)
@@ -35,7 +35,7 @@ public:
 		delete[] _items;
 	};
 
-	// перегрузка операторов
+// перегрузка операторов
 	
 	// []
 	T operator[] (int index) const
@@ -74,7 +74,7 @@ public:
 		return os;
 	}
 
-	//декомпозиция
+//декомпозиция
 
 	T Get(int index) const
 	{
@@ -90,7 +90,7 @@ public:
 		return _size;
 	};
 
-	//операции
+//операции
 
 	void Set(int index, T value)
 	{

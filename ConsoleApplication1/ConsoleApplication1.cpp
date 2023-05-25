@@ -1,22 +1,45 @@
 ﻿// ConsoleApplication1.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
 //
-
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
 #include <iostream>
 
 #include "LinkedList.h"
 
 int main()
 {
-    LinkedList<int> list;
-    LinkedList<int> listochek;
-    list.Append(5); listochek.Append(5);
-    list.Append(4); listochek.Append(4);
-    list.Append(3); listochek.Append(3);
-    list.Append(2); listochek.Append(2);
-    list.Append(1); listochek.Append(1);
+    
+    LinkedList<int>* list = new LinkedList<int>();
+    LinkedList<int>* listochek = new LinkedList<int>();
+    list->Append(5); listochek->Append(5);
+    list->Append(4); listochek->Append(4);
+    list->Append(3); listochek->Append(3);
+    list->Append(2); listochek->Append(2);
+    list->Append(1); listochek->Append(1);
     //printf("%d %d %d %d %d", );
-    LinkedList<int>* newlist = list.Concat(&listochek);
+    LinkedList<int>* newlist = list->Concat(listochek);
     std::cout << *newlist << std::endl;
+
+    delete list; delete listochek; delete newlist;
+    
+    /*
+    LinkedList<int>* list1 = new LinkedList<int>();
+    list1->Append(5);
+    list1->Append(5);
+    list1->Append(5);
+
+    LinkedList<int>* list2 = new LinkedList<int>(*list1);
+
+    std::cout << *list1 << " " << *list2 << std::endl;
+
+    delete list1;
+
+    std::cout << *list2 << std::endl;
+    */
+    _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
+    _CrtDumpMemoryLeaks();
+
     return 0;
 }
 
