@@ -8,7 +8,7 @@ class DynamicArray
 {
 public:
 
-//конструкторы и деструктор
+// создание
 
 	DynamicArray(T* items, size_t count) 
 		: _items(new T[count]), _size(count), _capacity(count)
@@ -47,6 +47,16 @@ public:
 		return _items[index];
 	};
 
+	T& operator[] (int index) 
+	{
+		if (index < 0 || index >= _size) {
+			throw std::out_of_range("Index out of range");
+		}
+
+		T& data = Get(index);
+		return data;
+	};
+
 	// = 
 	DynamicArray<T>& operator=(DynamicArray<T> const & dynamicArray)
 	{
@@ -74,7 +84,7 @@ public:
 		return os;
 	}
 
-//декомпозиция
+// декомпозиция
 
 	T Get(int index) const
 	{
@@ -90,7 +100,7 @@ public:
 		return _size;
 	};
 
-//операции
+// операции
 
 	void Set(int index, T value)
 	{
@@ -120,6 +130,15 @@ public:
 	};
 
 private:
+
+	T& Get(int index)
+	{
+		if (index < 0 || index >= _size) {
+			throw std::out_of_range("Index out of range");
+		}
+		T& data = *(_items + index);
+		return data;
+	};
 
 	T* _items;
 	size_t _size;

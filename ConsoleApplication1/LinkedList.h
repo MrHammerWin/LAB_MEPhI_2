@@ -48,37 +48,16 @@ public:
 
 	LinkedList(LinkedList<T> const& list)
 	{
-		_length = list._length;
-		
-		if (_length == 0) {
-			_head = _tail = nullptr;
+		size_t length = list._length;
+		_head = _tail = nullptr;
+		for (int i = 0; i < length; i++) {
+			this->Append(list[i]);
 		}
-
-		Node<T>* p1 = nullptr, * p2 = nullptr, * p = nullptr;
-
-		if (_length > 0) {
-			_head = new Node<T>(list._head->_data, nullptr);
-			p = _head;
-			p1 = list._head->_next;
-			if (p1 != 0) {
-				p2 = new Node<T>(p1->_data, nullptr);
-				p->_next = p2;
-				p = p2;
-				p1 = p1->_next;
-				for (int i = _length - 2; i > 0; i--) {
-					p2 = new Node<T>(p1->_data, nullptr);
-					p->_next = p2;
-					p1 = p1->_next;
-					p = p2;
-				}
-			}
-			_tail = p;
-		}
+		_length = length;
 	};
 
 	~LinkedList()
 	{
-		printf("Ya rodilsya!!!");
 		Node<T>* p1 = _head, * p2 = _head->_next;
 		delete _head;
 		for (int i = 0; i < _length - 1; i++) {
@@ -103,7 +82,13 @@ public:
 	// []
 	T operator[] (int index) const
 	{
-		T data = Get(index);
+		T data = this->Get(index);
+		return data;
+	};
+
+	T& operator[] (int index)
+	{
+		T& data = this->Get(index);
 		return data;
 	};
 
@@ -119,7 +104,7 @@ public:
 		}
 		os << "]";
 		return os;
-	}
+	};
 
 // декомпозиция
 
@@ -246,6 +231,22 @@ public:
 	};
 
 private:
+
+	T& Get(int index)
+	{
+		if (index < 0 || index >= _length) {
+			throw std::out_of_range("Index out of range");
+		}
+
+		Node<T>* p = _head;
+
+		for (int i = 0; i < index; i++) {
+			p = p->_next;
+		}
+		T& link = p->_data;
+		return link;
+	};
+
 	Node<T>* _head;
 	Node<T>* _tail;
 	size_t _length;

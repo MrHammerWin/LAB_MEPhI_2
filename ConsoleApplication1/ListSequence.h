@@ -3,58 +3,57 @@
 #include "LinkedList.h"
 #include "iostream"
 template <class T>
-class ListSequence : public Sequence<T>
+class LinkedListSequence : public Sequence<T>
 {
 public:
 
-// конструкторы
-	ListSequence(LinkedList<T> const& list) : _list(list)
+// создание
+	LinkedListSequence(LinkedList<T>* list) : _items(list)
 	{ };
 
-	ListSequence(T* items, size_t count)
+	LinkedListSequence(T* items, size_t count)
 	{
-		_list = new LinkedList<T>(items, count);
+		_items = new LinkedList<T>(items, count);
 	};
 
-	ListSequence()
+	LinkedListSequence()
 	{
-		_list = new LinkedList<T>();
+		_items = new LinkedList<T>();
 	}
 
-	ListSequence(ListSequence<T> const& list)
+	LinkedListSequence(LinkedListSequence<T> const& list)
 	{
-		_list = new LinkedList(list._list);
+		_items = new LinkedList(list._items);
 	};
 
-// деструктор
-	~ListSequence()
+	~LinkedListSequence()
 	{
-		delete _list;
+		delete _items;
 	};
 
 // перегрузка операторов
 
 	// = 
-	ListSequence<T>& operator=(ListSequence<T> const& seq)
+	LinkedListSequence<T>& operator=(LinkedListSequence<T> const& seq)
 	{
 		if (this != &seq) {
-			this->~ListSequence;
-			this = new ListSequence<T>(seq);
+			this->~LinkedListSequence;
+			this = new LinkedListSequence<T>(seq);
 		}
 		return *this;
 	};
 
 	// []
-	T operator[] (int index) const
+	T operator[] (int index) const override
 	{
 		return Get(index);
 	};
 
 	// <<
-	friend std::ostream& operator<<(std::ostream& os, ListSequence<T> const& seq)
+	friend std::ostream& operator<<(std::ostream& os, LinkedListSequence<T> const& seq)
 	{
 		size_t length = seq.GetLength();
-		os << "ListSequence[";
+		os << "LinkedListSequence[";
 		for (int i = 0; i < length; i++) {
 			os << seq[i];
 			if (i != length - 1)
@@ -67,59 +66,60 @@ public:
 // декомпозиция
 	T GetFirst() const override
 	{
-		return _list->GetFirst();
+		return _items->GetFirst();
 	};
 
 	T GetLast() const override 
 	{
-		return _list->GetLast();
+		return _items->GetLast();
 	};
 
-	T Get(int index) const override 
+	T& Get(int index) override 
 	{
-		return _list->Get(index);
+		return _items->Get(index);
 	};
 
 	Sequence<T>* GetSubsequence(int startIndex, int endIndex) const override 
 	{
-		LinkedList<T>* newList = _list->GetSubList(startIndex, endIndex);
-		ListSequence<T>* list_seq = new ListSequence<T>(newList);
+		LinkedList<T>* newList = _items->GetSubList(startIndex, endIndex);
+		LinkedListSequence<T>* list_seq = new LinkedListSequence<T>(newList);
 		return list_seq;
 	};
 
 	size_t GetLength() const override  
 	{
-		return _list->GetLength;
+		return _items->GetLength();
 	};
 
 // операции
 	void Append(T item) override 
 	{
-		_list->Append(item);
+		_items->Append(item);
 	};
 
 	void Prepend(T item) override 
 	{
-		_list->Prepend(item);
+		_items->Prepend(item);
 	};
 
 	void InsertAt(T item, int index) override 
 	{
-		_list->InsertAt(item, index);
+		_items->InsertAt(item, index);
 	};
 
 	Sequence<T>* Concat(Sequence<T>* seq) const override  
 	{
-		LinkedList<T>* list1 = LinkedList<T>(_list);
+		LinkedList<T>* list1 = new LinkedList<T>(*_items);
 		size_t length_seq = seq->GetLength();
 		for (int i = 0; i < length_seq; i++) {
-			list1->Append(seq[i]);
+			list1->Append(seq->Get(i));
 		}
-		ListSequence<T>* result = new ListSequence<T>(list1);
+		LinkedListSequence<T>* result = new LinkedListSequence<T>(list1);
 		return result;
 	};
 
 private:
-	LinkedList<T>* _list;
+	LinkedList<T>* _items;
 };
+
 
