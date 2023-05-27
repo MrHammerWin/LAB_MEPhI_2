@@ -23,7 +23,7 @@ public:
 
 	LinkedListSequence(LinkedListSequence<T> const& list)
 	{
-		_items = new LinkedList(list._items);
+		_items = new LinkedList<T>(*(list._items));
 	};
 
 	~LinkedListSequence()
@@ -45,6 +45,11 @@ public:
 
 	// []
 	T operator[] (int index) const override
+	{
+		return Get(index);
+	};
+
+	T& operator[] (int index) override
 	{
 		return Get(index);
 	};
@@ -74,9 +79,15 @@ public:
 		return _items->GetLast();
 	};
 
-	T& Get(int index) override 
+	T Get(int index) const override 
 	{
 		return _items->Get(index);
+	};
+
+	T& Get(int index)
+	{
+		T& data = _items->Get(index);
+		return data;
 	};
 
 	Sequence<T>* GetSubsequence(int startIndex, int endIndex) const override 
@@ -119,6 +130,7 @@ public:
 	};
 
 private:
+
 	LinkedList<T>* _items;
 };
 

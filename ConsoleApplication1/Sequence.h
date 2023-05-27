@@ -19,6 +19,19 @@ public:
 
 	virtual T operator[] (int index) const = 0;
 	virtual T& operator[] (int index) = 0;
+	friend std::ostream& operator<<(std::ostream& os, Sequence<T> const& seq)
+	{
+		os << "Sequence[";
+		size_t length = seq.GetLength();
+		for (int i = 0; i < length; i++) {
+			os << seq[i];
+			if (i != length - 1) {
+				os << ", ";
+			}
+		}
+		os << "]";
+		return os;
+	};
 
 	// операции
 	virtual void Append(T item) = 0;
@@ -26,4 +39,5 @@ public:
 	virtual void InsertAt(T item, int index) = 0;
 	virtual Sequence<T>* Concat(Sequence<T>* seq) const = 0;
 };
+
 

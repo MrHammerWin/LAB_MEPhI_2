@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ArraySequence.cpp" />
     <ClCompile Include="ConsoleApplication1.cpp" />
     <ClCompile Include="DynamicArray.cpp" />
     <ClCompile Include="LinkedList.cpp" />
@@ -134,6 +135,7 @@
     <ClCompile Include="Sequence.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ArraySequence.h" />
     <ClInclude Include="DynamicArray.h" />
     <ClInclude Include="LinkedList.h" />
     <ClInclude Include="ListSequence.h" />

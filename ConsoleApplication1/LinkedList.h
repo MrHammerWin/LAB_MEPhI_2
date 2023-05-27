@@ -137,6 +137,21 @@ public:
 		return p->_data;
 	};
 
+	T& Get(int index)
+	{
+		if (index < 0 || index >= _length) {
+			throw std::out_of_range("Index out of range");
+		}
+
+		Node<T>* p = _head;
+
+		for (int i = 0; i < index; i++) {
+			p = p->_next;
+		}
+		T& link = p->_data;
+		return link;
+	};
+
 	LinkedList<T>* GetSubList(int startIndex, int endIndex) const
 	{
 		if (startIndex < 0 || startIndex >= _length || endIndex < 0 || endIndex >= _length) {
@@ -231,21 +246,6 @@ public:
 	};
 
 private:
-
-	T& Get(int index)
-	{
-		if (index < 0 || index >= _length) {
-			throw std::out_of_range("Index out of range");
-		}
-
-		Node<T>* p = _head;
-
-		for (int i = 0; i < index; i++) {
-			p = p->_next;
-		}
-		T& link = p->_data;
-		return link;
-	};
 
 	Node<T>* _head;
 	Node<T>* _tail;

@@ -18,9 +18,12 @@ public:
 		}
 	};
 
-	DynamicArray(size_t size) 
-		: _items(new T[size]), _size(0), _capacity(size)
-	{ };
+	explicit DynamicArray(size_t size)
+	{ 
+		_capacity = (size == 0) ? (1) : (size);
+		_size = 0;
+		_items = new T[_capacity];
+	};
 
 	DynamicArray(DynamicArray<T> const & dynamicArray)
 		: _items(new T[dynamicArray._capacity]), _size(dynamicArray._size), _capacity(dynamicArray._capacity)
@@ -95,17 +98,38 @@ public:
 		return _items[index];
 	};
 
+	T& Get(int index)
+	{
+		if (index < 0 || index >= _size) {
+			throw std::out_of_range("Index out of range");
+		}
+		T& data = *(_items + index);
+		return data;
+	};
+
 	size_t GetSize() const noexcept
 	{
 		return _size;
+	};
+
+	size_t GetCapacity() const
+	{
+		return _capacity;
 	};
 
 // операции
 
 	void Set(int index, T value)
 	{
-		if (index < 0 || index >= _capacity) {
+		if (index < 0 || index > _size) {
 			throw std::out_of_range("Index out of range");
+		}
+
+		if (index == _size) {
+			if (_size == _capacity) {
+				this->Resize(_size * 3);
+			}
+			_size++;
 		}
 
 		_items[index] = value;
@@ -130,15 +154,6 @@ public:
 	};
 
 private:
-
-	T& Get(int index)
-	{
-		if (index < 0 || index >= _size) {
-			throw std::out_of_range("Index out of range");
-		}
-		T& data = *(_items + index);
-		return data;
-	};
 
 	T* _items;
 	size_t _size;
