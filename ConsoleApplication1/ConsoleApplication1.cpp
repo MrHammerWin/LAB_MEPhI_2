@@ -21,6 +21,9 @@ int main()
     Sequence<int>* arr2 = &arr;
     (*arr2)[1] = 100;
     std::cout << *arr2 << std::endl;
+    LinkedListSequence<int>* arr3 = (LinkedListSequence<int>*) arr2;
+    std::cout << *arr3 << std::endl;
+
     _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
     _CrtDumpMemoryLeaks();
 

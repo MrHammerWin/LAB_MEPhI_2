@@ -2,6 +2,7 @@
 #include "Sequence.h"
 #include "LinkedList.h"
 #include "iostream"
+
 template <class T>
 class LinkedListSequence : public Sequence<T>
 {
@@ -37,7 +38,7 @@ public:
 	LinkedListSequence<T>& operator=(LinkedListSequence<T> const& seq)
 	{
 		if (this != &seq) {
-			this->~LinkedListSequence;
+			this->~LinkedListSequence();
 			this = new LinkedListSequence<T>(seq);
 		}
 		return *this;
@@ -58,7 +59,7 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, LinkedListSequence<T> const& seq)
 	{
 		size_t length = seq.GetLength();
-		os << "LinkedListSequence[";
+		os << "ListSequence[";
 		for (int i = 0; i < length; i++) {
 			os << seq[i];
 			if (i != length - 1)
@@ -103,6 +104,7 @@ public:
 	};
 
 // операции
+
 	void Append(T item) override 
 	{
 		_items->Append(item);
@@ -116,6 +118,11 @@ public:
 	void InsertAt(T item, int index) override 
 	{
 		_items->InsertAt(item, index);
+	};
+
+	void Remove(int index) override
+	{
+		_items->Remove(index);
 	};
 
 	Sequence<T>* Concat(Sequence<T>* seq) const override  

@@ -12,7 +12,7 @@ public:
 	Node(T data, Node<T>* next) : _data(data), _next(next)
 	{ };
 
-	Node(T data) : _data(data), _next(0)
+	Node(T data) : _data(data), _next(nullptr)
 	{ };
 
 	Node() : _data(0), _next(0)
@@ -32,15 +32,21 @@ public:
 
 	LinkedList(T* items, int count)
 	{
-		_head = new Node<T>(items[0]);
-		Node<T>* current = _head;
-
-		for (int i = 1; i < count; i++) {
-			current->_next = new Node<T>(items[i]);
-			current = current->_next;
+		if (count <= 0) {
+			_head == _tail = nullptr;
+			_length = 0;
 		}
-		_tail = current;
-		_length = count;
+		else {
+			_head = new Node<T>(items[0]);
+			Node<T>* current = _head;
+
+			for (int i = 1; i < count; i++) {
+				current->_next = new Node<T>(items[i]);
+				current = current->_next;
+			}
+			_tail = current;
+			_length = count;
+		}
 	};
 
 	LinkedList() : _head(nullptr), _tail(nullptr), _length(0)
@@ -73,7 +79,7 @@ public:
 	LinkedList<T>& operator= (LinkedList<T> const& list) 
 	{
 		if (this != &list) {
-			this->~LinkedList;
+			this->~LinkedList();
 			this = new LinkedList<T>(list);
 		}
 		return *this;
@@ -228,6 +234,37 @@ public:
 			p1->_next = node;
 		}
 		_length++;
+	};
+
+	void Remove(int index)
+	{
+		if (_length == 0) {
+			throw std::logic_error("List is empty");
+		}
+
+		if (index < 0 || index >= _length) {
+			throw std::out_of_range("Index out of range");
+		}
+
+		if (index == 0) {
+			Node<T>* pointer = _head->_next;
+			delete _head;
+			_head = pointer;
+			_length--;
+			if (_length == 0) { _tail = nullptr; }
+		}
+		else {
+			Node<T>* prev = nullptr;
+			Node<T>* cur = _head;
+			for (int i = 0; i < index; i++) {
+				prev = cur;
+				cur = cur->_next;
+			}
+			if (cur == _tail) { _tail = prev; }
+			prev->_next = cur->_next;
+			delete cur;
+		}
+
 	};
 
 	LinkedList<T>* Concat(LinkedList<T>* list) const

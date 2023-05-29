@@ -98,14 +98,14 @@ public:
 	// <<
 	friend std::ostream& operator<<(std::ostream& os, ArraySequence<T> const& arr)
 	{
-		os << "ArraySequence[";
-		size_t size = arr.GetLength();
-		for (int i = 0; i < size; i++) {
+		size_t length = arr.GetLength();
+		os << "ArraySequence(";
+		for (int i = 0; i < length; i++) {
 			os << arr[i];
-			if (i != size - 1)
+			if (i != length - 1)
 				os << ", ";
 		}
-		os << "]";
+		os << ")";
 		return os;
 	};
 	
@@ -118,7 +118,6 @@ public:
 
 		_items->Set(size, item);
 	};
-
 
 	void Prepend(T item) 
 	{
@@ -134,6 +133,26 @@ public:
 	void InsertAt(T item, int index) 
 	{
 		_items->Set(index, item);
+	};
+
+	void Remove(int index)
+	{
+		if (_items->GetSize() == 0) {
+			throw std::logic_error("Array is empty");
+		}
+
+		if (index < 0 || index >= _items->GetSize()) {
+			throw std::out_of_range("Index out of range");
+		}
+
+		for (int i = index; i < _items->GetSize() - 1; i++) {
+			(*_items)[i] = (*_items)[i + 1];
+		}
+		(_items->_size)--;
+
+		if (_items->GetSize() * 3 <= _items->GetCapacity()) {
+			_items->Resize(_items->GetSize() + 1);
+		}
 	};
 
 	Sequence<T>* Concat(Sequence<T>* seq) const 

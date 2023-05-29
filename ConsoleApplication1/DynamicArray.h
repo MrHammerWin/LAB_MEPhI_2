@@ -4,14 +4,19 @@
 #include <iostream>
 
 template <class T>
+class ArraySequence;
+
+template <class T>
 class DynamicArray
 {
 public:
 
+	friend class ArraySequence<T>;
+
 // создание
 
 	DynamicArray(T* items, size_t count) 
-		: _items(new T[count]), _size(count), _capacity(count)
+		: _items(new T[(count == 0) ? (1) : (count)]), _size(count), _capacity((count == 0) ? (1) : (count))
 	{
 		for (int i = 0; i < count; i++) {
 			this->_items[i] = items[i];
@@ -43,19 +48,11 @@ public:
 	// []
 	T operator[] (int index) const
 	{
-		if (index < 0 || index >= _size) {
-			throw std::out_of_range("Index out of range");
-		}
-
-		return _items[index];
+		return Get(index);
 	};
 
 	T& operator[] (int index) 
 	{
-		if (index < 0 || index >= _size) {
-			throw std::out_of_range("Index out of range");
-		}
-
 		T& data = Get(index);
 		return data;
 	};
@@ -137,7 +134,7 @@ public:
 
 	void Resize(int newSize)
 	{
-		if (newSize < 0) {
+		if (newSize <= 0) {
 			throw std::logic_error("Wrong value of new size");
 		}
 
