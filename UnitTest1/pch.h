@@ -12,6 +12,8 @@
 #include "../ConsoleApplication1/ListSequence.h"
 #include "../ConsoleApplication1/ArraySequence.h"
 #include "../ConsoleApplication1/Sequence.h"
-
+#include "../ConsoleApplication1/Queue.h"
+#include "../ConsoleApplication1/Stack.h"
+#include "../ConsoleApplication1/Vector.h"
 
 #endif //PCH_H

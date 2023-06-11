@@ -113,8 +113,7 @@ public:
 
 	void Append(T item)
 	{
-		size_t size = _items->GetSize(); 
-		size_t capacity = _items->GetCapacity();
+		size_t size = _items->GetSize();
 
 		_items->Set(size, item);
 	};

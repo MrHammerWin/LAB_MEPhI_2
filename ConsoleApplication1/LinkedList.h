@@ -5,10 +5,8 @@
 #include <stdlib.h>
 
 template <class T>
-class Node
+struct Node
 {
-public:
-
 	Node(T data, Node<T>* next) : _data(data), _next(next)
 	{ };
 
