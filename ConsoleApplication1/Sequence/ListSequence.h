@@ -1,7 +1,7 @@
 #pragma once
 #include "Sequence.h"
 #include "LinkedList.h"
-#include "iostream"
+#include <iostream>
 
 template <class T>
 class LinkedListSequence : public Sequence<T>

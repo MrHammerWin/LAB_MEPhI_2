@@ -15,19 +15,22 @@ public:
 
 // создание
 
+	DynamicArray() : _size(0), _capacity(1), _items(new T[1])
+	{ };
+
+	explicit DynamicArray(size_t size)
+	{
+		_capacity = (size == 0) ? (1) : (size);
+		_size = 0;
+		_items = new T[_capacity];
+	};
+
 	DynamicArray(T* items, size_t count) 
 		: _items(new T[(count == 0) ? (1) : (count)]), _size(count), _capacity((count == 0) ? (1) : (count))
 	{
 		for (int i = 0; i < count; i++) {
 			this->_items[i] = items[i];
 		}
-	};
-
-	explicit DynamicArray(size_t size)
-	{ 
-		_capacity = (size == 0) ? (1) : (size);
-		_size = 0;
-		_items = new T[_capacity];
 	};
 
 	DynamicArray(DynamicArray<T> const & dynamicArray)
@@ -124,7 +127,8 @@ public:
 
 		if (index == _size) {
 			if (_size == _capacity) {
-				this->Resize(_size * 3);
+				throw std::out_of_range("Array is full");
+				//this->Resize(_size * 3);
 			}
 			_size++;
 		}

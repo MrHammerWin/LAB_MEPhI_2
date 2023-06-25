@@ -7,13 +7,13 @@
 #ifndef PCH_H
 #define PCH_H
 
-#include "../ConsoleApplication1/DynamicArray.h"
-#include "../ConsoleApplication1/LinkedList.h"
-#include "../ConsoleApplication1/ListSequence.h"
-#include "../ConsoleApplication1/ArraySequence.h"
-#include "../ConsoleApplication1/Sequence.h"
-#include "../ConsoleApplication1/Queue.h"
-#include "../ConsoleApplication1/Stack.h"
-#include "../ConsoleApplication1/Vector.h"
+#include "../ConsoleApplication1/Sequence/DynamicArray.h"
+#include "../ConsoleApplication1/Sequence/LinkedList.h"
+#include "../ConsoleApplication1/Sequence/ListSequence.h"
+#include "../ConsoleApplication1/Sequence/ArraySequence.h"
+#include "../ConsoleApplication1/Sequence/Sequence.h"
+#include "../ConsoleApplication1/Structures/Queue.h"
+#include "../ConsoleApplication1/Structures/Stack.h"
+#include "../ConsoleApplication1/Structures/Vector.h"
 
 #endif //PCH_H

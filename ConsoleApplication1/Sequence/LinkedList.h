@@ -31,7 +31,7 @@ public:
 	LinkedList(T* items, int count)
 	{
 		if (count <= 0) {
-			_head == _tail = nullptr;
+			_head = _tail = nullptr;
 			_length = 0;
 		}
 		else {
@@ -62,12 +62,14 @@ public:
 
 	~LinkedList()
 	{
-		Node<T>* p1 = _head, * p2 = _head->_next;
-		delete _head;
-		for (int i = 0; i < _length - 1; i++) {
-			p1 = p2;
-			p2 = p2->_next;
-			delete p1;
+		if (_head != nullptr && _tail != nullptr) {
+			Node<T>* p1 = _head, * p2 = _head->_next;
+			delete _head;
+			for (int i = 0; i < _length - 1; i++) {
+				p1 = p2;
+				p2 = p2->_next;
+				delete p1;
+			}
 		}
 	};
 
@@ -160,6 +162,10 @@ public:
 	{
 		if (startIndex < 0 || startIndex >= _length || endIndex < 0 || endIndex >= _length) {
 			throw std::out_of_range("Index out of range");
+		}
+
+		if (endIndex - startIndex + 1 <= 0) {
+			throw std::logic_error("End index is less than start index");
 		}
 
 		Node<T>* p = nullptr, * p1 = nullptr, * p2 = nullptr;
@@ -261,6 +267,7 @@ public:
 			if (cur == _tail) { _tail = prev; }
 			prev->_next = cur->_next;
 			delete cur;
+			_length--;
 		}
 
 	};

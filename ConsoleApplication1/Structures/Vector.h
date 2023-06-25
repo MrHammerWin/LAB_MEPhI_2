@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <cmath>
-#include "ArraySequence.h"
+#include "../Sequence/ArraySequence.h"
 
 template <class T>
 class Vector
@@ -13,18 +13,13 @@ public:
 		_coordinates(new ArraySequence<T>(coordinates, dimension)), _dimension(dimension)
 	{ };
 
-	Vector(ArraySequence<T> const& coordinates) : _coordinates(new ArraySequence<T>(coordinates))
+	Vector(ArraySequence<T> const& coordinates) : _coordinates(new ArraySequence<T>(coordinates)), _dimension(coordinates.GetLength())
 	{ };
 
 	Vector(Vector<T> const& vector)
 	{
-		_coordinates = new ArraySequence<T>(*(vector->_coordinates));
-		_dimension = vector->_dimension;
-	};
-
-	size_t GetDimension() const
-	{
-		return _dimension;
+		_coordinates = new ArraySequence<T>(*(vector._coordinates));
+		_dimension = vector._dimension;
 	};
 
 	~Vector() 
@@ -32,7 +27,12 @@ public:
 		delete _coordinates;
 	};
 
-	Vector<T>& Sum(Vector<T> const& vector) const
+	size_t GetDimension() const
+	{
+		return _dimension;
+	};
+
+	Vector<T> Sum(Vector<T> const& vector) const
 	{
 		if (vector.GetDimension() != _dimension) {
 			throw std::logic_error("An attempt to sum vectors of different dimensions");
@@ -41,7 +41,7 @@ public:
 		ArraySequence<T> sumCoordinates(_dimension);
 
 		for (int i = 0; i < _dimension; i++) {
-			sumCoordinates.Append(_coordinates[i] + vector._coordinates[i]);
+			sumCoordinates.Append((*_coordinates)[i] + (*vector._coordinates)[i]);
 		}
 
 		Vector<T> sumVector(sumCoordinates);
@@ -49,12 +49,12 @@ public:
 		return sumVector;
 	};
 
-	Vector<T>& MultByScalar(T scalar) const
+	Vector<T> MultByScalar(T scalar) const
 	{
 		ArraySequence<T> newCoordinates(_dimension);
 
 		for (int i = 0; i < _dimension; i++) {
-			newCoordinates.Append(_coordinates[i] * scalar);
+			newCoordinates.Append((*_coordinates)[i] * scalar);
 		}
 
 		Vector<T> newVector(newCoordinates);
@@ -71,7 +71,7 @@ public:
 		T result = 0;
 
 		for (int i = 0; i < _dimension; i++) {
-			result = result + (vector._coordinates[i] * _coordinates[i]);
+			result = result + ((*vector._coordinates)[i] * (*_coordinates)[i]);
 		}
 
 		return result;
@@ -82,7 +82,7 @@ public:
 		T res = 0;
 
 		for (int i = 0; i < _dimension; i++) {
-			res = res + std::pow<T, int>(_coordinates[i], 2);
+			res = res + std::pow<T, int>((*_coordinates)[i], 2);
 		};
 
 		return std::pow<T, double>(res, 0.5);
@@ -97,7 +97,7 @@ public:
 	{
 		if (this != &vector) {
 			this->~Vector();
-			_coordinates = new ArraySequence<T>(vector._coordinates);
+			_coordinates = new ArraySequence<T>(*(vector._coordinates));
 			_dimension = vector._dimension;
 		}
 		
@@ -119,18 +119,21 @@ public:
 	};
 
 private:
-	ArraySequence<T> const* _coordinates;
+	ArraySequence<T>* _coordinates;
 	size_t _dimension;
 };
 
+
+// operators
+
 template <class T>
-Vector<T>& operator*(Vector<T> const& lVector, T rScalar)
+Vector<T> operator*(Vector<T> const& lVector, T rScalar)
 {
 	return lVector.MultByScalar(rScalar);
 };
 
 template <class T>
-Vector<T>& operator*(T lScalar, Vector<T> const& rVector)
+Vector<T> operator*(T lScalar, Vector<T> const& rVector)
 {
 	return rVector.MultByScalar(lScalar);
 };
@@ -142,12 +145,12 @@ T operator*(Vector<T> const& lVector, Vector<T> const& rVector)
 };
 
 template <class T>
-Vector<T>& operator+(Vector<T> const& lVector, Vector<T> const& rVector)
+Vector<T> operator+(Vector<T> const& lVector, Vector<T> const& rVector)
 {
 	return lVector.Sum(rVector);
 };
 
 template <class T>
-Vector<T>& operator-(Vector<T> const& lVector, Vector<T> const& rVector) {
+Vector<T> operator-(Vector<T> const& lVector, Vector<T> const& rVector) {
 	return lVector.Sum(rVector * (-1));
 };

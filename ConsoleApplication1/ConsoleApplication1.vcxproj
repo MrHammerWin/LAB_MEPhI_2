@@ -127,28 +127,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ArraySequence.cpp" />
     <ClCompile Include="ConsoleApplication1.cpp" />
-    <ClCompile Include="DynamicArray.cpp" />
-    <ClCompile Include="LinkedList.cpp" />
-    <ClCompile Include="ListSequence.cpp" />
-    <ClCompile Include="Queue.cpp" />
-    <ClCompile Include="Sequence.cpp" />
-    <ClCompile Include="Stack.cpp" />
-    <ClCompile Include="Vector.cpp" />
+    <ClCompile Include="MenuLab2.cpp" />
+    <ClCompile Include="MenuLab3.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ArraySequence.h" />
-    <ClInclude Include="BinaryHeap.h" />
-    <ClInclude Include="BinaryTree.h" />
-    <ClInclude Include="DynamicArray.h" />
-    <ClInclude Include="IBinaryTree.h" />
-    <ClInclude Include="LinkedList.h" />
-    <ClInclude Include="ListSequence.h" />
-    <ClInclude Include="Queue.h" />
-    <ClInclude Include="Sequence.h" />
-    <ClInclude Include="Stack.h" />
-    <ClInclude Include="Vector.h" />
+    <ClInclude Include="MenuLab2.h" />
+    <ClInclude Include="MenuLab3.h" />
+    <ClInclude Include="Sequence\ArraySequence.h" />
+    <ClInclude Include="Sequence\DynamicArray.h" />
+    <ClInclude Include="Sequence\LinkedList.h" />
+    <ClInclude Include="Sequence\ListSequence.h" />
+    <ClInclude Include="Sequence\Sequence.h" />
+    <ClInclude Include="Structures\Queue.h" />
+    <ClInclude Include="Structures\Stack.h" />
+    <ClInclude Include="Structures\Vector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

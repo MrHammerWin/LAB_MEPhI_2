@@ -20,12 +20,12 @@ public:
 // операторы
 	virtual T operator[] (int index) const = 0;
 	virtual T& operator[] (int index) = 0;
-	friend std::ostream& operator<<(std::ostream& os, Sequence<T> const& seq)
+	friend std::ostream& operator<<(std::ostream& os, Sequence<T>* const& seq)
 	{
-		size_t length = seq.GetLength();
+		size_t length = seq->GetLength();
 		os << "Sequence[";
 		for (int i = 0; i < length; i++) {
-			os << seq[i];
+			os << seq->Get(i);
 			if (i != length - 1)
 				os << ", ";
 		}

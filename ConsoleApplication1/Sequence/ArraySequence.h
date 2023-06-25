@@ -1,13 +1,15 @@
 #pragma once
 #include "Sequence.h"
 #include "DynamicArray.h"
-#include "iostream"
 
 template <class T>
 class ArraySequence : public Sequence<T>
 {
 public:
 // создание
+
+	ArraySequence() : _items(new DynamicArray<T>())
+	{ };
 
 	ArraySequence(T* items, size_t count)
 	{
@@ -22,10 +24,8 @@ public:
 		_items = new DynamicArray <T>(size);
 	};
 
-	ArraySequence(ArraySequence<T> const& arr)
-	{
-		DynamicArray<T>* _items = new DynamicArray<T>(*(arr->_items));
-	};
+	ArraySequence(ArraySequence<T> const& arr) : _items(new DynamicArray<T>(*(arr._items)))
+	{ };
 
 	~ArraySequence() 
 	{
@@ -61,9 +61,19 @@ public:
 			throw std::out_of_range("Index out of range");
 		}
 
-		int sub_size = endIndex - startIndex + 1;
-		DynamicArray<T>* arr = new DynamicArray<T>((sub_size >= 0) ? (sub_size) : (0));
+		if (endIndex - startIndex + 1 <= 0) {
+			throw std::logic_error("End index is less than start index");
+		}
+
+		int subSize = endIndex - startIndex + 1;
+		DynamicArray<T>* arr = new DynamicArray<T>(subSize);
+		
+		for (int i1 = startIndex, i2 = 0; i1 <= endIndex; i1++, i2++) {
+			arr->Set(i2, this->Get(i1));
+		}
+
 		ArraySequence<T>* arrSeq = new ArraySequence<T>(*arr);
+		delete arr;
 		return arrSeq;
 	};
 
@@ -114,6 +124,11 @@ public:
 	void Append(T item)
 	{
 		size_t size = _items->GetSize();
+		size_t capacity = _items->GetCapacity();
+
+		if (size == capacity) {
+			_items->Resize(size * 3);
+		}
 
 		_items->Set(size, item);
 	};
@@ -123,7 +138,11 @@ public:
 		size_t size = _items->GetSize();
 		size_t capacity = _items->GetCapacity();
 
-		for (int i = size; i > 0; i--) {
+		if (size == capacity) {
+			_items->Resize(size * 3);
+		}
+
+		for (int i = size; i > 0; i--) {                         
 			_items->Set(i, _items->Get(i - 1));
 		}
 		_items->Set(0, item);
@@ -131,6 +150,21 @@ public:
 
 	void InsertAt(T item, int index) 
 	{
+		if (index < 0 || index >= _items->GetSize()) {
+			throw std::out_of_range("Index out of range");
+		}
+
+		size_t size = _items->GetSize();
+		size_t capacity = _items->GetCapacity();
+
+		if (size == capacity) {
+			_items->Resize(size * 3);
+		}
+
+		for (int i = size; i > index; i--) {     
+			_items->Set(i, _items->Get(i-1));
+		}
+
 		_items->Set(index, item);
 	};
 
@@ -156,8 +190,8 @@ public:
 
 	Sequence<T>* Concat(Sequence<T>* seq) const 
 	{
-		size_t sizeThis = _items->GetSize();
-		size_t sizeSeq = _items->GetSize();
+		size_t sizeThis = this->GetLength();
+		size_t sizeSeq = seq->GetLength();
 		DynamicArray<T>* arr = new DynamicArray<T>(sizeThis + sizeSeq);
 		for (int i = 0; i < sizeThis; i++) {
 			arr->Set(i, this->Get(i));
@@ -166,6 +200,7 @@ public:
 			arr->Set(sizeThis + i, seq->Get(i));
 		}
 		ArraySequence<T>* result = new ArraySequence<T>(*arr);
+		delete arr;
 		return result;
 	};
 

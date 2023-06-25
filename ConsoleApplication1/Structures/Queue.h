@@ -1,7 +1,8 @@
 #pragma once
 
 #include <iostream>
-#include "ListSequence.h"
+#include "../Sequence/Sequence.h"
+#include "../Sequence/ListSequence.h"
 
 template <class T>
 class Queue
@@ -16,7 +17,7 @@ public:
 
 	Queue(Queue<T> const& queue)
 	{
-		_items = new LinkedListSequence<T>(*(queue->_items));
+		_items = new LinkedListSequence<T>(*(queue._items));
 	};
 
 	~Queue() 
@@ -24,17 +25,17 @@ public:
 		delete _items; 
 	};
 
-	size_t GetLength() 
+	size_t GetLength() const 
 	{ 
 		return _items->GetLength(); 
 	};
 
-	bool IsEmpty() 
+	bool IsEmpty() const 
 	{ 
 		return (_items->GetLength()); 
 	};
 
-	T Peek(int index) 
+	T Peek(int index) const 
 	{ 
 		return _items->Get(index); 
 	};
@@ -63,6 +64,19 @@ public:
 	T operator[] (int index)
 	{
 		return Peek(index);
+	};
+
+	friend std::ostream& operator<<(std::ostream& os, Queue<T> const& queue)
+	{
+		size_t length = queue.GetLength();
+		os << "Queue[";
+		for (int i = 0; i < length; i++) {
+			os << queue.Peek(i);
+			if (i != length - 1)
+				os << ", ";
+		}
+		os << "]";
+		return os;
 	};
 
 private:
