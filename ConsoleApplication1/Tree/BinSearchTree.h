@@ -1,6 +1,6 @@
 #pragma once
 
-#include "./Tree/BinaryTree.h"
+#include "BinaryTree.h"
 
 template <class T>
 class BinarySearchTree : public BinaryTree<T, T>

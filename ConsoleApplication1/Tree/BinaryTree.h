@@ -442,6 +442,14 @@ public:
 		Traverse(_root, first, second, third, func);
 	};
 
+	friend std::ostream& operator<<(std::ostream& os, BinaryTree<TKey, TData> const& tree)
+	{
+		std::string result = tree.ToString(Left, Root, Right);
+		os << result;
+
+		return os;
+	}
+
 protected:
 
 	void Balance() noexcept override
@@ -509,14 +517,6 @@ protected:
 
 		delete startNode;
 	};
-
-	friend std::ostream& operator<<(std::ostream& os, BinaryTree<TKey, TData> const& tree)
-	{
-		std::string result = tree.ToString(Left, Root, Right);
-		os << result;
-
-		return os;
-	}
 
 protected:
 
