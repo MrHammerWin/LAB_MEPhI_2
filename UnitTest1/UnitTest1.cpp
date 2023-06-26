@@ -670,4 +670,109 @@ namespace UnitTests
 			Assert::IsTrue(res == 13);
 		}
 	};
+
+	TEST_CLASS(BinaryHeapTests)
+	{
+		void throwException1()
+		{
+			BinaryHeap<int>* heap = new BinaryHeap<int>();
+			heap->GetMax();
+		};
+
+		TEST_METHOD(TestAll)
+		{
+			int items[] = { 1, 2, 3, 4, 5 };
+			BinaryHeap<int>* heap = new BinaryHeap<int>(items, 5);
+			heap->Add(6);
+			heap->Add(7);
+			heap->Add(8);
+			std::string expected = "BinaryHeap(8, 7, 6, 5, 4, 3, 2, 1)";
+			std::stringstream buffer;
+			buffer << *heap; // Вывод осуществляется с помощью GetMax() и копирующего конструктора
+			Assert::AreEqual(expected, buffer.str());
+			// Если работает, то работают и все функции
+
+			auto func1 = [this] {throwException1(); };
+			Assert::ExpectException<std::exception>(func1);
+		}
+	};
+
+	TEST_CLASS(BinarySearchTreeTests)
+	{
+		TEST_METHOD(TestCopyContructor)
+		{
+			int items[] = { 1, 2, 3, 4, 5 };
+			BinarySearchTree<int>* tree = new BinarySearchTree<int>(items, 5);
+			BinarySearchTree<int>* newTree = new BinarySearchTree<int>(*tree);
+			std::string expected = "1 2 3 4 5";
+			std::stringstream buffer;
+			buffer << *newTree;
+			Assert::AreEqual(expected, buffer.str());
+		}
+		TEST_METHOD(TestInsert)
+		{
+			int items[] = { 1, 2, 3, 4, 5 };
+			BinarySearchTree<int>* tree = new BinarySearchTree<int>(items, 5);
+			tree->Insert(10);
+			tree->Insert(20);
+			std::string expected = "1 2 3 4 5 10 20";
+			std::stringstream buffer;
+			buffer << *tree; 
+			Assert::AreEqual(expected, buffer.str());
+		}
+
+		TEST_METHOD(TestRemovePlusFind)
+		{
+			int items[] = { 1, 2, 3, 4, 5 };
+			BinarySearchTree<int>* tree = new BinarySearchTree<int>(items, 5);
+			tree->Remove(1);
+			tree->Remove(2);
+			tree->Remove(3);
+			std::string expected1 = "4 5";
+			std::stringstream buffer1;
+			buffer1 << *tree;
+			Assert::AreEqual(expected1, buffer1.str());
+			tree->Remove(4);
+			tree->Remove(5);
+			std::string expected2 = "";
+			std::stringstream buffer2;
+			buffer2 << *tree;
+			Assert::AreEqual(expected2, buffer2.str());
+		}
+
+		TEST_METHOD(TestMap)
+		{
+			int items[] = { 1, 2, 3, 4, 5 };
+			BinarySearchTree<int>* tree = new BinarySearchTree<int>(items, 5);
+			IBinaryTree<int, int>* mappedTree = tree->Map([](int const& value) -> int {return value + 40; });
+			std::string expected = "41 42 43 44 45";
+			std::stringstream buffer;
+			buffer << *mappedTree;
+			Assert::AreEqual(expected, buffer.str());
+		}
+
+		TEST_METHOD(TestWhere)
+		{
+			int items[] = { 1, 2, 3, 4, 5 };
+			BinarySearchTree<int>* tree = new BinarySearchTree<int>(items, 5);
+			IBinaryTree<int, int>* filteredTree = tree->Where([](int const& value) -> bool {return value >= 3; });
+			std::string expected = "3 4 5";
+			std::stringstream buffer;
+			buffer << *filteredTree;
+			Assert::AreEqual(expected, buffer.str());
+		}
+
+		TEST_METHOD(TestMerge)
+		{
+			int items1[] = { 1, 2, 3, 4, 5 };
+			BinarySearchTree<int>* tree1 = new BinarySearchTree<int>(items1, 5);
+			int items2[] = { 6, 7, 8, 9, 10 };
+			BinarySearchTree<int>* tree2 = new BinarySearchTree<int>(items2, 5);
+			IBinaryTree<int, int>* mergedTree = tree1->Merge(tree2);
+			std::string expected = "1 2 3 4 5 6 7 8 9 10";
+			std::stringstream buffer;
+			buffer << *mergedTree;
+			Assert::AreEqual(expected, buffer.str());
+		}
+	};
 }

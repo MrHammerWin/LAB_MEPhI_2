@@ -1,25 +1,42 @@
 #pragma once
 
 #include "IBinaryTree.h"
+#include <sstream>
 
 template <class TKey, class TData>
 class BinaryTree : public IBinaryTree<TKey, TData>
 {
 
 public:
-	BinaryTree() : _root(nullptr), _keyGenerator([](TData const& value) -> TKey { return TKey(value)})
+	BinaryTree() : _root(nullptr), _keyGenerator([](TData const& value) -> TKey { return TKey(value); })
 	{ };
 
-	BinaryTree(TData startValue, KeyGenerator keyGenerator) : _root(new TreeNode<TKey, TData>(startValue, keyGenerator)), _keyGenerator(keyGenerator)
+	BinaryTree(TData startValue, KeyGenerator<TKey, TData> keyGenerator) : _root(new TreeNode<TKey, TData>(startValue, keyGenerator)), _keyGenerator(keyGenerator)
 	{ };
 
-	BinaryTree(KeyGenerator keyGenerator) : _root(nullptr), _keyGenerator(keyGenerator)
+	BinaryTree(TData* initialItems, size_t count, KeyGenerator<TKey, TData> keyGenerator)
+	{
+		_keyGenerator = keyGenerator;
+		for (int i = 0; i < count; i++) {
+			Insert(initialItems[i]);
+		}
+	};
+
+	BinaryTree(TData* initialItems, size_t count)
+	{
+		_keyGenerator = [](TData const& value) -> TKey { return TKey(value); };
+		for (int i = 0; i < count; i++) {
+			Insert(initialItems[i]);
+		}
+	};
+
+	BinaryTree(KeyGenerator<TKey, TData> keyGenerator) : _root(nullptr), _keyGenerator(keyGenerator)
 	{ };
 	
-	BinaryTree(TreeNode<TKey, TData> const& startNode, KeyGenerator keyGenerator) : _root(new TreeNode<TKey, TData>(startNode)), _keyGenerator(keyGenerator)
+	BinaryTree(TreeNode<TKey, TData> const& startNode, KeyGenerator<TKey, TData> keyGenerator) : _root(new TreeNode<TKey, TData>(startNode)), _keyGenerator(keyGenerator)
 	{ };
 
-	BinaryTree(TreeNode<TKey, TData>* rootNodePtr, KeyGenerator keyGenerator) : _root(rootNodePtr), _keyGenerator(keyGenerator)
+	BinaryTree(TreeNode<TKey, TData>* rootNodePtr, KeyGenerator<TKey, TData> keyGenerator) : _root(rootNodePtr), _keyGenerator(keyGenerator)
 	{ };
 
 	BinaryTree(BinaryTree<TKey, TData> const& other)
@@ -33,21 +50,17 @@ public:
 		DeleteTree(_root);
 	};
 
-	TreeNode<TKey, TData>* GetRoot()
+	TreeNode<TKey, TData>* GetRoot() const override
 	{
 		return _root;
 	};
 
-	//////////////// vse perepisat cherez normalnuyu huynyu  ////////////////////////
-
-
-	TreeNode<TKey, TData>* Find(TData value)
+	TreeNode<TKey, TData>* Find(TData const& value) const override
 	{
 		TreeNode<TKey, TData>* current = _root;
 		TKey key = _keyGenerator(value);
 
 		while (current) {
-			
 			if (key == current->_key)
 				return current;
 			else if (key < current->_key)
@@ -58,7 +71,40 @@ public:
 		return nullptr;
 	};
 
-	TreeNode<TKey, TData>* FindParent(TData value)
+	TreeNode<TKey, TData>* Find(Sequence<TraversalOrder>* sequenceOfTraversion) const override
+	{
+		size_t length = sequenceOfTraversion->GetLength();
+
+		if (!_root)
+			return nullptr;
+
+		TreeNode<TKey, TData>* current = _root;
+		TraversalOrder direction;
+
+		for (int i = 0; i < length; i++) {
+			direction = sequenceOfTraversion->Get(i);
+
+			switch (direction)
+			{
+			case Left:
+				current = current->_left;
+				if (!current)
+					return nullptr;
+				break;
+
+			case Root:
+				return current;
+
+			case Right:
+				current = current->_right;
+				if (!current)
+					return nullptr;
+				break;
+			}
+		}
+	};
+
+	TreeNode<TKey, TData>* FindParent(TData value) const
 	{
 		if (!Find(value))
 			return nullptr;
@@ -87,37 +133,36 @@ public:
 		return nullptr;
 	};
 
-	
-
-	void Insert(T value)
+	void Insert(TData const& value) override
 	{
 		if (Find(value))
 			return;
 
 		if (!_root) {
-			_root = new TreeNode<TKey, TData>(value);
+			_root = new TreeNode<TKey, TData>(value, _keyGenerator);
 			return;
 		}
-
+		
+		TKey key = _keyGenerator(value);
 		TreeNode<TKey, TData>* current = _root;
 
 		while (true) {
 
-			if (value < current->_key) {
+			if (key < current->_key) {
 				if (current->_left) {
 					current = current->_left;
 				}
 				else {
-					current->_left = new TreeNode<TKey, TData>(value);
+					current->_left = new TreeNode<TKey, TData>(value, _keyGenerator);
 					break;
 				}
 			}
-			else if (value > current->_key){
+			else if (key > current->_key){
 				if (current->_right) {
 					current = current->_right;
 				}
 				else {
-					current->_right = new TreeNode<TKey, TData>(value);
+					current->_right = new TreeNode<TKey, TData>(value, _keyGenerator);
 					break;;
 				}
 			}
@@ -135,102 +180,162 @@ public:
 			delete _root;
 			_root = nullptr;
 		}
-
+		else
 		if ((_root->_left) && !(_root->_right)) {
 			TreeNode<TKey, TData>* temp = _root->_left;
 			delete _root;
 			_root = temp;
 		}
-
+		else
 		if (!(_root->_left) && (_root->_right)) {
 			TreeNode<TKey, TData>* temp = _root->_right;
 			delete _root;
 			_root = temp;
 		}
-
+		else
 		if ((_root->_left) && (_root->_right)) {
 			TreeNode<TKey, TData>* min = FindMin(_root->_right);
 			TreeNode<TKey, TData>* minParent = FindParent(min->_key);
 			_root->_key = min->_key;
+			_root->_data = min->_data;
 			minParent->_left = nullptr;
 			delete min;
 		}
-		_root->FixHeight();
-		Balance();
+		if (_root) {
+			_root->FixHeight();
+			Balance();
+		}
 	};
 
-	void Remove(T value)
+	void Remove(TData const& value) override
 	{
 		TreeNode<TKey, TData>* needRemove = Find(value);
-		TreeNode<TKey, TData>* parentNeedRemove = FindParent(needRemove->_key);
-
+		
 		if (!needRemove)
 			return;
 
-		if (_root->_key == value) {
+		TreeNode<TKey, TData>* parentNeedRemove = FindParent(needRemove->_key);
+		TKey key = _keyGenerator(value);
+
+		if (_root->_key == key) {
 			RemoveRoot();
 			return;
 		}
 
 		if (!(needRemove->_left) && !(needRemove->_right)) {
-			if (parentNeedRemove->_left == needRemove)
+			if (parentNeedRemove->_left == needRemove) {
 				delete parentNeedRemove->_left;
-			else
+				parentNeedRemove->_left = nullptr;
+			}
+			else {
 				delete parentNeedRemove->_right;
+				parentNeedRemove->_right = nullptr;
+			}
 		}
-
+		else
 		if ((needRemove->_left) && !(needRemove->_right)) {
-			if (parentNeedRemove->_left == needRemove)
+			if (parentNeedRemove->_left == needRemove) {
 				parentNeedRemove->_left = needRemove->_left;
-			else
+			}
+			else {
 				parentNeedRemove->_right = needRemove->_left;
-
+			}
 			delete needRemove;
 		}
-		
+		else
 		if (!(needRemove->_left) && (needRemove->_right)) {
-			if (parentNeedRemove->_left == needRemove)
+			if (parentNeedRemove->_left == needRemove) {
 				parentNeedRemove->_left = needRemove->_right;
-			else
+			}
+			else {
 				parentNeedRemove->_right = needRemove->_right;
-
+			}
 			delete needRemove;
 		}
-		
+		else
 		if ((needRemove->_left) && (needRemove->_right)) {
 			TreeNode<TKey, TData>* min = FindMin(needRemove->_right);
 			TreeNode<TKey, TData>* minParent = FindParent(min->_key);
 			minParent->_left = nullptr;
 			needRemove->_key = min->_key;
+			needRemove->_data = min->_data;
 			delete min;
 		}
 		_root->FixHeight();
 		Balance();
 	};
 
-
-	std::string ToString()
+	std::string ToString(TraversalOrder first, TraversalOrder second, TraversalOrder third) const override
 	{
-		return ToString(_root);
+		std::string result;
+		result = ToString(first, second, third, _root);
+		if (!result.empty())
+			result.pop_back();
+		return result;
 	};
 
-	std::string ToString(TreeNode<TKey, TData>* startNode)
+	std::string ToString(TraversalOrder first, TraversalOrder second, TraversalOrder third, TreeNode<TKey, TData>* startNode) const
 	{
+		if (first == second || first == third || second == third)
+			throw std::logic_error("Invalid traversal order");
+
 		std::string result = "";
 
 		if (!startNode)
 			return "";
 
-		result.append(ToString(startNode->_left));
+		switch (first)
+		{
+		case Left:
+			result.append(ToString(first, second, third, startNode->_left));
+			break;
 
-		result.append(ValueToString(startNode->_key));
-		result.append(" ");
-		result.append(ToString(startNode->_right));
+		case Root:
+			result.append(ValueToString(startNode->_data));
+			result.append(" ");
+			break;
+
+		case Right:
+			result.append(ToString(first, second, third, startNode->_right));
+			break;
+		}
+
+		switch (second)
+		{
+		case Left:
+			result.append(ToString(first, second, third, startNode->_left));
+			break;
+
+		case Root:
+			result.append(ValueToString(startNode->_data));
+			result.append(" ");
+			break;
+
+		case Right:
+			result.append(ToString(first, second, third, startNode->_right));
+			break;
+		}
+
+		switch (third)
+		{
+		case Left:
+			result.append(ToString(first, second, third, startNode->_left));
+			break;
+
+		case Root:
+			result.append(ValueToString(startNode->_data));
+			result.append(" ");
+			break;
+
+		case Right:
+			result.append(ToString(first, second, third, startNode->_right));
+			break;
+		}
 
 		return result;
 	};
 
-	BinaryTree<TKey, TData>* GetSubTree(TData value)
+	BinaryTree<TKey, TData>* GetSubTree(TData value) const
 	{
 		TreeNode<TKey, TData>* startNode = Find(value);
 
@@ -244,7 +349,7 @@ public:
 		return result;
 	};
 
-	TreeNode<TKey, TData>* CopySubTree(TreeNode<TKey, TData>* startNode)
+	TreeNode<TKey, TData>* CopySubTree(TreeNode<TKey, TData>* startNode) const
 		// возвращает корень копии поддерева
 	{
 		if (!startNode)
@@ -258,9 +363,88 @@ public:
 		current->FixHeight();
 	};
 
+	IBinaryTree<TKey, TData>* Copy() const override
+	{
+		TreeNode<TKey, TData>* newRoot = CopySubTree(_root);
+		BinaryTree<TKey, TData>* newTree = new BinaryTree<TKey, TData>(newRoot, _keyGenerator);
+		return (IBinaryTree<TKey, TData>*) newTree;
+	};
+
+	IBinaryTree<TKey, TData>* Create() const override
+	{
+		return (IBinaryTree<TKey, TData>*) (new BinaryTree<TKey, TData>(nullptr, _keyGenerator));
+	};
+
+	void Traverse(TreeNode<TKey, TData>* startNode, TraversalOrder first, TraversalOrder second, TraversalOrder third, std::function<void(TData&)> func) override
+	{
+		if (first == second || first == third || second == third)
+			throw std::logic_error("Invalid traversal order");
+
+		if (!startNode)
+			return;
+
+		TreeNode<TData, TKey>* current = startNode;
+
+		switch (first)
+		{
+		case Left:
+			Traverse(current->_left, first, second, third, func);
+			break;
+
+		case Root:
+			func(current->_data);
+			current->_key = _keyGenerator(current->_data);
+			break;
+
+		case Right:
+			Traverse(current->_right, first, second, third, func);
+			break;
+		}
+
+		switch (second)
+		{
+		case Left:
+			Traverse(current->_left, first, second, third, func);
+			break;
+
+		case Root:
+			func(current->_data);
+			current->_key = _keyGenerator(current->_data);
+			break;
+
+		case Right:
+			Traverse(current->_right, first, second, third, func);
+			break;
+		}
+
+		switch (third)
+		{
+		case Left:
+			Traverse(current->_left, first, second, third, func);
+			break;
+
+		case Root:
+			func(current->_data);
+			current->_key = _keyGenerator(current->_data);
+			break;
+
+		case Right:
+			Traverse(current->_right, first, second, third, func);
+			break;
+		}
+
+		startNode->FixHeight();
+		startNode->Balance();
+	};
+
+	void Traverse(TraversalOrder first, TraversalOrder second, TraversalOrder third, std::function<void(TData&)> func) override
+	{
+		Traverse(_root, first, second, third, func);
+	};
+
 protected:
 
-	void Balance()
+	void Balance() noexcept override
 	{
 		_root = BalanceSubTree(_root);
 		_root->FixHeight();
@@ -280,7 +464,7 @@ protected:
 		return newRoot;
 	};
 
-	TreeNode<TKey, TData>* FindMax(TreeNode<TKey, TData>* startNode)
+	TreeNode<TKey, TData>* FindMax(TreeNode<TKey, TData>* startNode) const
 	{
 		if (!startNode)
 			return nullptr;
@@ -294,9 +478,9 @@ protected:
 		return max;
 	};
 
-	TreeNode<TKey, TData>* FindMin(TreeNode<TKey, TData>* startNode)
+	TreeNode<TKey, TData>* FindMin(TreeNode<TKey, TData>* startNode) const
 	{
-		if (!startNode)
+		if (startNode == nullptr)
 			return nullptr;
 
 		TreeNode<TKey, TData>* min = startNode;
@@ -308,16 +492,16 @@ protected:
 		return min;
 	};
 
-	std::string ValueToString(T value)
+	std::string ValueToString(TData value) const
 	{
-		std::ostringstream oss;
-		oss << value;
-		return oss.str();
+		std::stringstream ss;
+		ss << value;
+		return ss.str();
 	};
 
 	void DeleteTree(TreeNode<TKey, TData>* startNode)
 	{
-		if (!startNode) {
+		if (startNode == nullptr) {
 			return;
 		}
 		DeleteTree(startNode->_left);
@@ -326,10 +510,17 @@ protected:
 		delete startNode;
 	};
 
-private:
+	friend std::ostream& operator<<(std::ostream& os, BinaryTree<TKey, TData> const& tree)
+	{
+		std::string result = tree.ToString(Left, Root, Right);
+		os << result;
+
+		return os;
+	}
+
+protected:
 
 	TreeNode<TKey, TData>* _root;
-	KeyGenerator _keyGenerator;
-
+	KeyGenerator<TKey, TData> _keyGenerator;
 };
 

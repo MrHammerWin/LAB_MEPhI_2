@@ -1,6 +1,8 @@
 #pragma once
 
-#include "Sequence.h"
+#include <iostream>
+#include <stdlib.h>
+#include "../Sequence/Sequence.h"
 #include <functional>
 
 template<class TKey, class TData>
@@ -113,18 +115,19 @@ public:
 
 	virtual ~IBinaryTree() {};
 
-	IBinaryTree<TKey, TData>* Map(TData(*) (TData const&) func) const
+	IBinaryTree<TKey, TData>* Map(TData (*func) (TData const&)) const
 	{
 		IBinaryTree<TKey, TData>* result = this->Copy();
 
-		result->Traverse(Left, Root, Right, func);
+		result->Traverse(Left, Root, Right, [result, func](TData& value) -> void { value =  func(value); });
 
-		result->Balance();
+		if (result->GetRoot())
+			result->Balance();
 
 		return result;
 	}
 
-	IBinaryTree<TKey, TData>* Where(bool (*) (TData const&) condition) const
+	IBinaryTree<TKey, TData>* Where(bool (*condition) (TData const&))
 	{
 		IBinaryTree<TKey, TData>* result = Create();
 
@@ -160,26 +163,26 @@ public:
 		return result;
 	}
 
-	virtual TreeNode<TKey, TData>* Find(const TData& value) const = 0;
+	virtual TreeNode<TKey, TData>* Find(TData const& value) const = 0;
 	virtual TreeNode<TKey, TData>* Find(Sequence<TraversalOrder>* sequenceOfTraversion) const = 0;
 
-	virtual bool Contains(TData const& value) const = 0;
+	bool Contains(TData const& value) const
+	{
+		return (bool) Find(value);
+	};
 
-	virtual IBinaryTree<TKey, TData>* Insert(const TData& value) = 0;
+	virtual void Insert(const TData& value) = 0;
 	virtual void Remove(const TData& value) = 0;
 	virtual TreeNode<TKey, TData>* GetRoot() const = 0;
 
 	virtual void Traverse(TreeNode<TKey, TData>* startNode, TraversalOrder first, TraversalOrder second, TraversalOrder third, std::function<void(TData&)> func) = 0;
 	virtual void Traverse(TraversalOrder first, TraversalOrder second, TraversalOrder third, std::function<void(TData&)> func) = 0;
 
-	virtual void Traverse(TraversalOrder first, TraversalOrder second, TraversalOrder third, std::function<void(TreeNode<TKey, TData>*)> func) = 0;
-	virtual void Traverse(TreeNode<TKey, TData>* startNode, TraversalOrder first, TraversalOrder second, TraversalOrder third, std::function<void(TreeNode<TKey, TData>*)> func) = 0;
-
 	virtual void Balance() noexcept = 0;
-	virtual IBinaryTree<TKey, TData>* Copy() = 0;
-	virtual IBinaryTree<TKey, TData>* Create() = 0;
+	virtual IBinaryTree<TKey, TData>* Copy() const = 0;
+	virtual IBinaryTree<TKey, TData>* Create() const = 0;
 
-	virtual std::string ToString(TraversalOrder first, TraversalOrder second, TraversalOrder third) = 0;
+	virtual std::string ToString(TraversalOrder first, TraversalOrder second, TraversalOrder third) const = 0;
 
 	friend std::ostream& operator<<(std::ostream& os, IBinaryTree<TKey, TData> const& tree)
 	{
@@ -188,6 +191,5 @@ public:
 
 		return os;
 	}
-
 };
 

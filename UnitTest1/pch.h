@@ -15,5 +15,9 @@
 #include "../ConsoleApplication1/Structures/Queue.h"
 #include "../ConsoleApplication1/Structures/Stack.h"
 #include "../ConsoleApplication1/Structures/Vector.h"
+#include "../ConsoleApplication1/Tree/IBinaryTree.h"
+#include "../ConsoleApplication1/Tree/BinaryTree.h"
+#include "../ConsoleApplication1/Tree/BinaryHeap.h"
+#include "../ConsoleApplication1/Tree/BinSearchTree.h"
 
 #endif //PCH_H

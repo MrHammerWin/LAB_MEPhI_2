@@ -130,8 +130,11 @@
     <ClCompile Include="ConsoleApplication1.cpp" />
     <ClCompile Include="MenuLab2.cpp" />
     <ClCompile Include="MenuLab3.cpp" />
+    <ClCompile Include="MenuLab4.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BinSearchTree.h" />
+    <ClInclude Include="MenuLab4.h" />
     <ClInclude Include="MenuLab2.h" />
     <ClInclude Include="MenuLab3.h" />
     <ClInclude Include="Sequence\ArraySequence.h" />
@@ -142,6 +145,9 @@
     <ClInclude Include="Structures\Queue.h" />
     <ClInclude Include="Structures\Stack.h" />
     <ClInclude Include="Structures\Vector.h" />
+    <ClInclude Include="Tree\BinaryHeap.h" />
+    <ClInclude Include="Tree\BinaryTree.h" />
+    <ClInclude Include="Tree\IBinaryTree.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
