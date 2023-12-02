@@ -1,7 +1,14 @@
 ﻿
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+
+#include "../ConsoleApplication1/TestSmartPtr.h"
 #include <stdlib.h>
 #include <iostream>
 #include <complex>
+#include <ctime>
+#include "../ConsoleApplication1/Smart_Ptr/SmrtPointers.h"
 
 // Лабораторная Номер 2
 
@@ -28,13 +35,14 @@
 #include "./MenusForLab/MenuLab3.h"
 #include "./MenusForLab/MenuLab4.h"
 
-// Функция - драйвер
+
 
 int main()
 {
-    //menuLab2();
-    //menuLab3();
-    //menuLab4();
-
-    return 0;
+	std::cout << TimeManySmartPtr() << "ms" << std::endl;
+	std::cout << TimeFewSmartPtr() << "ms" << std::endl;
+	std::cout << TimeManyPtr() << "ms" << std::endl;
+	std::cout << TimeFewPtr() << "ms" << std::endl;
+	_CrtDumpMemoryLeaks();
+	return 0;
 }

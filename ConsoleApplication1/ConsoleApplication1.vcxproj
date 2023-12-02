@@ -104,6 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -118,6 +119,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -131,8 +133,10 @@
     <ClCompile Include="MenusForLab\MenuLab2.cpp" />
     <ClCompile Include="MenusForLab\MenuLab3.cpp" />
     <ClCompile Include="MenusForLab\MenuLab4.cpp" />
+    <ClCompile Include="TestSmartPtr.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="TestSmartPtr.h" />
     <ClInclude Include="MenusForLab\MenuLab2.h" />
     <ClInclude Include="MenusForLab\MenuLab3.h" />
     <ClInclude Include="MenusForLab\MenuLab4.h" />
@@ -141,6 +145,7 @@
     <ClInclude Include="Sequence\LinkedList.h" />
     <ClInclude Include="Sequence\ListSequence.h" />
     <ClInclude Include="Sequence\Sequence.h" />
+    <ClInclude Include="Smart_Ptr\SmrtPointers.h" />
     <ClInclude Include="Structures\Queue.h" />
     <ClInclude Include="Structures\Stack.h" />
     <ClInclude Include="Structures\Vector.h" />
